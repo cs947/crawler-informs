@@ -84,7 +84,8 @@ def check(link):
         # if code == 200:
         #     print(link[0] + " caught by if statement")
     except requests.exceptions.SSLError as s:
-        code = "SSLError"
+        sourcecodeSSLError = requests.get(link[0], verify = False, headers = headers)
+        code = sourcecodeSSLError.status_code
         error = s
     except Exception as e:
         error = e
