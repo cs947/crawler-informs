@@ -125,7 +125,9 @@ def generate_link_dataframe():
     for link in link_set:
         page_num += 1
         # if page_num == 2: break # for testing
-        for link_pair in ret_all_link(link):
+        all_links = ret_all_link(link)
+        print(all_links)
+        for link_pair in all_links:
             pair = check(link_pair)
             if pair:
                 list_towrite = ["https://www.informs.org" + link] + pair
