@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import pdb
 
 links = [
     "http://www.biomedreports.com/articles/latest-news/1904-richard-staelin-phd-duke-university-professor-will-lead-board-of-directors.html",
@@ -26,6 +27,7 @@ for x in links:
       sourcecode = requests.get(x, verify=False)
       print("try " + str(sourcecode.status_code))
       code = sourcecode.status_code
+      pdb.set_trace()
       if code == 200:
           print("caught by if statement")
     except requests.exceptions.SSLError as s:

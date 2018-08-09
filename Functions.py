@@ -34,9 +34,11 @@ def find_date(soup):
         # print('So we have to split here')
         # print(date.contents)
         # print(len(date.contents))
+        print(date)
         if len(date.contents) == 1:
             if len(date.string) > 5:
                 date = str(date.string).strip()
+                print(date)
                 i_slash = date.index('–')
                 if i_slash < 5: born_date = 'N/A'
                 else:

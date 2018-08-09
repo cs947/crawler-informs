@@ -126,16 +126,20 @@ def generate_link_dataframe():
         page_num += 1
         # if page_num == 2: break # for testing
         all_links = ret_all_link(link)
-        print(all_links)
-        for link_pair in all_links:
-            pair = check(link_pair)
-            if pair:
-                list_towrite = ["https://www.informs.org" + link] + pair
-                list_towrite = check_list(list_towrite)
-                link_num += 1
-                links_list.append(list_towrite)
-                print(list_towrite)
-        print("Page number: " + str(page_num) + "/" + str(page_num_tot) + " Link number: " + str(link_num))
+        try:
+            for link_pair in all_links:
+                pair = check(link_pair)
+                if pair:
+                    list_towrite = ["https://www.informs.org" + link] + pair
+                    list_towrite = check_list(list_towrite)
+                    link_num += 1
+                    links_list.append(list_towrite)
+                    #print(list_towrite)
+            print("Page number: " + str(page_num) + "/" + str(page_num_tot) + " Link number: " + str(link_num))
+        except TypeError as e:
+            print("Caught TypeError")
+            print(all_links)
+            print(type(all_links))
     # links_list.to_pickle("dead_link.pkl")
     links_df = pd.DataFrame(links_list, columns=('page', 'link', 'text', 'code', 'error'))
     # df = links_df[links_df['code'] != 200]
