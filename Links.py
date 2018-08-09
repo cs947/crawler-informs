@@ -5,7 +5,7 @@ import os
 import pandas as pd
 from queue import *
 from bs4 import BeautifulSoup
-
+import pdb
 
 
 def find_internal_links():
@@ -50,8 +50,9 @@ def ret_int_link(link):
 def ret_all_link(link):
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
-    except:
-        return None
+    except Exception as e:
+        print(e)
+        return []
     text = sourcecode.text
     soup = BeautifulSoup(text, "html.parser")
     main = soup.main
@@ -137,6 +138,7 @@ def generate_link_dataframe():
                     #print(list_towrite)
             print("Page number: " + str(page_num) + "/" + str(page_num_tot) + " Link number: " + str(link_num))
         except TypeError as e:
+            pdb.set_trace()
             print("Caught TypeError")
             print(all_links)
             print(type(all_links))
