@@ -34,8 +34,9 @@ def find_internal_links():
 def ret_int_link(link):
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
-    except:
-        return None
+    except Exception as e:
+        print(e)
+        return []
     text = sourcecode.text
     soup = BeautifulSoup(text, "html.parser")
     main = soup.main
@@ -47,6 +48,7 @@ def ret_int_link(link):
         if href_str.startswith('/Explore/History-of-O.R.-Excellence') and "?" not in href_str and "#" not in href_str and "pdf" not in href_str:
             children.append(str(href))
     return children
+
 def ret_all_link(link):
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
@@ -68,6 +70,8 @@ def ret_all_link(link):
 
 
 def check(link):
+    #returns what goes into a line on the dead links spreadsheet
+    #checks if the link is actually dead or not
     '''
     if "pubsonline" in link[1]:
         return [link[0], link[1], 403]
@@ -75,7 +79,7 @@ def check(link):
         return [link[0], link[1], 999]
     '''
     # link[0] is link, link[1] is text
-    headers = headers = headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     code= 0
     error = ""
     try:
@@ -118,7 +122,7 @@ def generate_link_dataframe():
     except:
         print("Internal links not found. Please run 'find' to generate internal links\n")
         return
-    print("Successful opened list set")
+    print("Successfully opened list set")
     links_list = [['page', 'link', 'text', 'code', 'error']]
     page_num_tot = len(link_set)
     page_num = 0
