@@ -5,7 +5,8 @@ import pdb
 links = [
     "http://www.biomedreports.com/articles/latest-news/1904-richard-staelin-phd-duke-university-professor-will-lead-board-of-directors.html",
     "https://asq.org/about-asq/honorary-members/box",
-    "https://www.jstor.org/stable/167358"
+    "https://www.jstor.org/stable/167358",
+    "https://rady.ucsd.edu/people/faculty/markowitz/"
     # "https://www.informs-sim.org/wsc17papers/includes/files/005.pdf",
     # "http://www.econlib.org/library/Enc/bios/Allais.html",
     # "https://ise.usc.edu/directory/faculty/profile/?lname=Settles&fname=Frank",

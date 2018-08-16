@@ -64,8 +64,8 @@ def ret_all_link(link):
         href_str = str(href)
         # if href_str.startswith('/') and "?" not in href_str and "#" not in href_str:
         #     children.append(["https://www.informs.org" + href_str, url.text.replace('\n', '')])
-        # if href_str.startswith('http') and "?" not in href_str and "#" not in href_str and "pubsonline" not in href_str and "linkedin" not in href_str and "analytics-magazine.org" not in href_str:
-        children.append([href_str, url.text.replace('\n', '')])
+        if href_str.startswith('http'): # and "?" not in href_str and "#" not in href_str and "pubsonline" not in href_str and "linkedin" not in href_str and "analytics-magazine.org" not in href_str:
+            children.append([href_str, url.text.replace('\n', '')])
     return children
 
 
