@@ -85,14 +85,17 @@ def check(link):
     try:
         sourcecode = requests.get(link[0], headers = headers)
         code = sourcecode.status_code
+        print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
 #        print(str(code) + " try block " + link[0])
         # if code == 200:
         #     print(link[0] + " caught by if statement")
     except requests.exceptions.SSLError as s:
+        print("SSLError")
         sourcecodeSSLError = requests.get(link[0], verify = False, headers = headers)
         code = sourcecodeSSLError.status_code
         error = s
     except Exception as e:
+        print("Other Exception occured")
         error = e
 
     info_list = [link[0], link[1], code, error]
@@ -101,6 +104,24 @@ def check(link):
     else:
         return []
 
+def find_math_genea(link, link_pair):
+    print("link is :" + str(link))
+    print("link_pair is: " + str(link_pair))
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+    parent = "https://www.informs.org" + link
+    child = link_pair[0]
+    try:
+        sourcecode = requests.get(link, headers=headers)
+    except Exception as e:
+        print(e)
+        return []
+    code = sourcecode.status_code
+    text = sourcecode.text
+    soup = BeautifulSoup(text, "html.parser")
+    text = soup.find_all(href = link_pair[1])[0].parent.text
+    foo = [parent, child, code, text]
+    print(foo)
+    return foo
 
 def check_list(list_towrite):
     if list_towrite[2] != "link": return list_towrite
@@ -113,6 +134,7 @@ def check_list(list_towrite):
         text = "link"
     soup = BeautifulSoup(text, "html.parser")
     list_towrite[2] = soup.find_all(href = child)[0].parent.text
+    print(list_towrite[2])
     return list_towrite
 
 def generate_link_dataframe():
@@ -124,15 +146,21 @@ def generate_link_dataframe():
         return
     print("Successfully opened list set")
     links_list = [['page', 'link', 'text', 'code', 'error']]
+    mglinks_list = [['page', 'link', 'code', 'text']]
     page_num_tot = len(link_set)
     page_num = 0
     link_num = 0
+    ultimate_links =[]
     for link in link_set:
         page_num += 1
         # if page_num == 2: break # for testing
         all_links = ret_all_link(link)
+        print(all_links)
         try:
             for link_pair in all_links:
+                ultimate_links.append(link_pair)
+                if link_pair[0].find('www.genealogy.math.ndsu.nodak.edu') >= 0:
+                    mglinks_list.append(find_math_genea(link, link_pair))
                 pair = check(link_pair)
                 if pair:
                     list_towrite = ["https://www.informs.org" + link] + pair
@@ -144,23 +172,24 @@ def generate_link_dataframe():
         except TypeError as e:
             pdb.set_trace()
             print("Caught TypeError")
-            print(all_links)
-            print(type(all_links))
+
     # links_list.to_pickle("dead_link.pkl")
     links_df = pd.DataFrame(links_list, columns=('page', 'link', 'text', 'code', 'error'))
+    mglinks_df = pd.DataFrame(mglinks_list, columns=('page', 'link', 'code', 'text'))
+    ultlinks_df = pd.DataFrame(ultimate_links, columns=('all', 'next'))
     # df = links_df[links_df['code'] != 200]
-    output_dead_link(links_df)
+    output_dead_link(links_df, mglinks_df, ultlinks_df)
     print("Finished! Total of", link_num, "dead links are found.\n", "Excel file generated under", os.getcwd())
     return
 
 
-def output_dead_link(df):
+def output_dead_link(df, mgdf=pd.DataFrame(), ultldf=pd.DataFrame()):
     time = str(datetime.datetime.now())[:-7]
     writer = pd.ExcelWriter('dead links ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
     df.to_excel(writer, header=False, index=False, sheet_name='inform')
     workbook = writer.book
     worksheet = writer.sheets['inform']
-    text_format = workbook.add_format({'text_wrap': True})
+    text_format = workbook.add_format({'text_wrap': False})
     title_format = workbook.add_format({'text_wrap': True})
     title_format.set_bold()  # Turns bold on.
     title_format.set_align('top')
@@ -171,5 +200,8 @@ def output_dead_link(df):
     worksheet.set_column('D:D', 8, text_format)
     worksheet.set_column('E:E', 80, text_format)
     worksheet.freeze_panes(1, 0)  # Freeze first row and first 2 columns.
+    mgdf.to_excel(writer, sheet_name='math genea links')
+    mathg = writer.sheets['math genea links']
+    ultldf.to_excel(writer, sheet_name='all the links')
     writer.save()
     print("Finished! Excel file generated under", os.getcwd(), "\n")
