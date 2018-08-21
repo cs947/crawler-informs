@@ -9,6 +9,8 @@ import pdb
 
 
 def find_internal_links():
+    # creates a pickle file with all of the informs links
+    # that are under root_link, in this case: /Explore/History-of-O.R.-Excellence
     root_link = "/Explore/History-of-O.R.-Excellence"
     internal_links = set()
     internal_links.add(root_link)
@@ -32,6 +34,8 @@ def find_internal_links():
 
 
 def ret_int_link(link):
+    # returns a list of all links within informs that stem from
+    # the link given as an argument
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
     except Exception as e:
@@ -50,6 +54,8 @@ def ret_int_link(link):
     return children
 
 def ret_all_link(link):
+    # returns all the links on the page given by the link argument
+    # excludes the header and footer
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
     except Exception as e:
@@ -70,8 +76,11 @@ def ret_all_link(link):
 
 
 def check(link):
-    #returns what goes into a line on the dead links spreadsheet
-    #checks if the link is actually dead or not
+    # returns a list of [link that is broken,
+    #                   text that was with the link,
+    #                   status code given by the link,
+    #                   error message if there is one]
+    # checks if the link actually has a problem or not
     '''
     if "pubsonline" in link[1]:
         return [link[0], link[1], 403]
@@ -85,18 +94,21 @@ def check(link):
     try:
         sourcecode = requests.get(link[0], headers = headers)
         code = sourcecode.status_code
-        print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
-#        print(str(code) + " try block " + link[0])
-        # if code == 200:
-        #     print(link[0] + " caught by if statement")
+        #code = requests.get(link[0], headers = headers).status_code #testing the ANZIAM link
+        if link[0].find('jstor') >=0:
+            print("in jstor")
+            if code == 403 & sourcecode.text.find('CAPTCHA') :
+                print("inside CAPTCHA")
+                code = 200
+        #print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
     except requests.exceptions.SSLError as s:
         print("SSLError")
         sourcecodeSSLError = requests.get(link[0], verify = False, headers = headers)
         code = sourcecodeSSLError.status_code
-        error = s
+        error = str(s)
     except Exception as e:
         print("Other Exception occured")
-        error = e
+        error = str(e)
 
     info_list = [link[0], link[1], code, error]
     if code != 200:
@@ -105,25 +117,31 @@ def check(link):
         return []
 
 def find_math_genea(link, link_pair):
+    #
     print("link is :" + str(link))
     print("link_pair is: " + str(link_pair))
+    print("link_pair[0] is: " + str(link_pair[0]))
+    print("link_pair[1] is: " + str(link_pair[1]))
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     parent = "https://www.informs.org" + link
-    child = link_pair[0]
+    child = str(link_pair[0])
+    foo = []
     try:
-        sourcecode = requests.get(link, headers=headers)
+        sourcecode = requests.get(child, headers=headers)
+        code = sourcecode.status_code
+        text = sourcecode.text
+        if text.find("You have specified an ID that does not exist in the database.") >= 0:
+            foo = [parent, child, code, text]
+        #soup = BeautifulSoup(text, "html.parser")
+        #text = soup.find_all(href = child)[0].parent.text
+        #print(foo)
+        return foo
     except Exception as e:
         print(e)
-        return []
-    code = sourcecode.status_code
-    text = sourcecode.text
-    soup = BeautifulSoup(text, "html.parser")
-    text = soup.find_all(href = link_pair[1])[0].parent.text
-    foo = [parent, child, code, text]
-    print(foo)
-    return foo
+        return foo
 
 def check_list(list_towrite):
+    #
     if list_towrite[2] != "link": return list_towrite
     parent = list_towrite[0]
     child = list_towrite[1]
@@ -155,11 +173,11 @@ def generate_link_dataframe():
         page_num += 1
         # if page_num == 2: break # for testing
         all_links = ret_all_link(link)
-        print(all_links)
+        #print(all_links)
         try:
             for link_pair in all_links:
                 ultimate_links.append(link_pair)
-                if link_pair[0].find('www.genealogy.math.ndsu.nodak.edu') >= 0:
+                if link_pair[0].find('genealogy.math.ndsu.nodak.edu') >= 0:
                     mglinks_list.append(find_math_genea(link, link_pair))
                 pair = check(link_pair)
                 if pair:
