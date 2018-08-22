@@ -4,6 +4,7 @@ import re
 
 
 def find_links(all_letters):
+    # returns a list of all the Briographical Profile links on INFORMS
     links = []
     for letter in all_letters:
         url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/(alpha)/' + letter
@@ -58,6 +59,8 @@ def find_date(soup):
 
 
 def if_photos(soup):
+    # returns 'Absent' if there is not a photo
+    # returns 'Present' if there is a photo
     indicator = 'Absent'
     for _ in soup.findAll('img', {'class': 'right dropshadow'}):
         indicator = 'Present'
@@ -66,6 +69,8 @@ def if_photos(soup):
 
 
 def bio_word_count(soup):
+    # returns the number of words in the "Brief Biography" section of a Biographical
+    # Profile
     brief_bio = ' '
     for string in soup.find('div', {'id': 'bio_header'}).strings:
         brief_bio += string + ' '
@@ -76,6 +81,7 @@ def bio_word_count(soup):
 
 
 def wiki_link(soup):
+    # returns the whether
     wiki = 'Absent'
     for link in soup.findAll('a'):
         href = str(link.get('href'))

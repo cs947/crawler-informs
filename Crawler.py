@@ -7,6 +7,7 @@ import os
 
 
 def find_info():
+    # creates the excel spreadsheet of biographical profiles 
     group_letters = ['A', 'C', 'F', 'I', 'M', 'O', 'S', 'V'] #comment for testing
     personal_links = f.find_links(group_letters)
     """
