@@ -3,7 +3,10 @@ from bs4 import BeautifulSoup
 import pdb
 
 links = [
+    "https://findingaids.princeton.edu/collections/AC391",
     "http://www.anziam.org.au/The+1995+ANZIAM+Medal",
+    #"http://connect.informs.org/sola/solaawards"
+    "http://news.wharton.upenn.edu/feature-stories/2012/09/in-memoriam-paul-r-kleindorfer/"
 ]
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}

@@ -97,7 +97,8 @@ def check(link):
         #code = requests.get(link[0], headers = headers).status_code #testing the ANZIAM link
         if link[0].find('jstor') >=0:
             print("in jstor")
-            if code == 403 & sourcecode.text.find('CAPTCHA') :
+            print(sourcecode.text)
+            if code == 403 and sourcecode.text.find('Access') :
                 print("inside CAPTCHA")
                 code = 200
         #print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
@@ -132,6 +133,7 @@ def find_math_genea(link, link_pair):
         text = sourcecode.text
         if text.find("You have specified an ID that does not exist in the database.") >= 0:
             foo = [parent, child, code, text]
+            print(foo)
         #soup = BeautifulSoup(text, "html.parser")
         #text = soup.find_all(href = child)[0].parent.text
         #print(foo)
@@ -173,7 +175,7 @@ def generate_link_dataframe():
         page_num += 1
         # if page_num == 2: break # for testing
         all_links = ret_all_link(link)
-        #print(all_links)
+        print(all_links)
         try:
             for link_pair in all_links:
                 ultimate_links.append(link_pair)

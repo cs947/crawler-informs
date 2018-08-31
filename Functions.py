@@ -38,13 +38,13 @@ def find_date(soup):
         if len(date.contents) == 1:
             if len(date.string) > 5:
                 date = str(date.string).strip()
-                i_slash = date.index('–')
-                if i_slash < 5: born_date = 'N/A'
+                i_dash = date.index('–')
+                if i_dash < 5: born_date = 'N/A'
                 else:
-                    born_date = date[0:i_slash-9]
+                    born_date = date[0:i_dash-9]
                     # i_born = born_date.index(',')
                     # born_date = born_date[0:i_born] + born_date[i_born+1:]
-                die_date = date[i_slash+2:]
+                die_date = date[i_dash+2:]
                 # i_die = die_date.index(',')
                 # die_date = die_date[0:i_die] + die_date[i_die+1:]
                 date = [born_date, die_date]
