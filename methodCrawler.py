@@ -5,10 +5,10 @@ import pandas as pd
 import datetime
 import os
 
-def find_method_info():
+def find_method_info(info):
     thisdict =	{
-        "acinfo": 'Academic-Institutions/',
-        "noacinfo": 'Non-Academic-Institutions/',
+        "ainfo": 'Academic-Institutions/',
+        "noainfo": 'Non-Academic-Institutions/',
         "appinfo": 'O.R.-Application-Areas',
         "minfo": 'O.R.-Methodologies/',
     }
@@ -19,25 +19,25 @@ def find_method_info():
                         'Memoirs and Autobiographies', 'Library Archives']]
     time = str(datetime.datetime.now())[:-7]
     print(time)
-    writer = pd.ExcelWriter(thisdict["minfo"][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(thisdict[info][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
 
     # m_page = ['', '(offset)/20']
     m_page = ['', '(offset)/20']
     pages = {
-        "acinfo": ['', '(offset)/20'],
-        "noacinfo": ['', '(offset)/20', '(offset)/40'],
+        "ainfo": ['', '(offset)/20'],
+        "noainfo": ['', '(offset)/20', '(offset)/40'],
         "appinfo": ['', '(offset)/20'],
         "minfo": ['', '(offset)/20'],
     }
 
-    m_links = f.find_m_links(thisdict["minfo"], pages["minfo"])
+    m_links = f.find_m_links(thisdict[info], pages[info])
     print(m_links)
     for i in m_links:
         print(i)
         source_code = requests.get(i)
         text = source_code.text
         parse = BeautifulSoup(text, "html.parser")
-        body = parse.find("div", {"class": "body"})
+        body = parse.find("div", {"class": "content-container"})
         title = f.find_title(parse)
         print(title)
         desc_word_count = f.desc_word_count(parse)

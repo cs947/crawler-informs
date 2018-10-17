@@ -34,36 +34,15 @@ def find_m_links(area, m_page):
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
         for link in soup.findAll('a'):
+            print(link)
             href = link.get('href')
             string = str(href)
             if len(string) < 54:
                 continue
-            if string.startswith('/Explore/History-of-O.R.-Excellence/O.R.-Methodologies/') and \
+            if string.startswith('/Explore/History-of-O.R.-Excellence/' + area) and \
                 string.find('(') == -1:
                 links.append('https://www.informs.org' + href)
-    print(links)
     return links
-
-# def find_m_links(page):
-#     # returns a list of links in O.R. Methodologies
-#     links = []
-#     # for area in contentarea:
-#     #for page in m_page:
-#     url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas' + page
-#     # print(url)
-#     sourcecode = requests.get(url)
-#     txt = sourcecode.text
-#     soup = BeautifulSoup(txt, "html.parser")
-#     for link in soup.findAll('a'):
-#         href = link.get('href')
-#         string = str(href)
-#         # print(string)
-#         if len(string) < 54:
-#             continue
-#         if string.startswith('/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas/'):
-#             links.append('https://www.informs.org' + href)
-#     #print(links)
-#     return links
 
 def find_title(soup):
     title = soup.find('h1').text
@@ -128,7 +107,8 @@ def if_photos(soup):
 
 def desc_word_count(soup):
     description_ = ''
-    body = soup.find("div", {"class": "body"})
+    body = soup.find("div", {"class": "content-container"})
+    print("BODY IS: " + str(body))
     ptags = body.findAll(True)
     for tag in ptags:
         if tag.name == "p":
