@@ -19,7 +19,7 @@ def find_method_info():
                         'Memoirs and Autobiographies', 'Library Archives']]
     time = str(datetime.datetime.now())[:-7]
     print(time)
-    writer = pd.ExcelWriter(thisdict["minfo"] + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(thisdict["minfo"][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
 
     # m_page = ['', '(offset)/20']
     m_page = ['', '(offset)/20']
