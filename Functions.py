@@ -24,38 +24,97 @@ def find_links(all_letters):
     #print(links)
     return links
 
+def find_m_links(area, m_page):
+    # returns a list of links in O.R. Methodologies
+    links = []
+    for page in m_page:
+        url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/' + area + page
+        # print(url)
+        sourcecode = requests.get(url)
+        txt = sourcecode.text
+        soup = BeautifulSoup(txt, "html.parser")
+        for link in soup.findAll('a'):
+            href = link.get('href')
+            string = str(href)
+            if len(string) < 54:
+                continue
+            if string.startswith('/Explore/History-of-O.R.-Excellence/O.R.-Methodologies/') and \
+                string.find('(') == -1:
+                links.append('https://www.informs.org' + href)
+    print(links)
+    return links
+
+# def find_m_links(page):
+#     # returns a list of links in O.R. Methodologies
+#     links = []
+#     # for area in contentarea:
+#     #for page in m_page:
+#     url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas' + page
+#     # print(url)
+#     sourcecode = requests.get(url)
+#     txt = sourcecode.text
+#     soup = BeautifulSoup(txt, "html.parser")
+#     for link in soup.findAll('a'):
+#         href = link.get('href')
+#         string = str(href)
+#         # print(string)
+#         if len(string) < 54:
+#             continue
+#         if string.startswith('/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas/'):
+#             links.append('https://www.informs.org' + href)
+#     #print(links)
+#     return links
+
+def find_title(soup):
+    title = soup.find('h1').text
+    print('title is ' + title)
+    return title
 
 def find_date(soup):
+    #print("in find_date and this is soup: " + str(soup))
+    print('souptitlesstrin010' + soup.title.string[0:-10])
     name = soup.title.string[0:-10]
     name = name.split(',')
     print(name)
     if len(name) > 2:
         name = [name[0], ','.join(name[1:])]
+    birth_date = ['N/A']
+    death_date = ['N/A']
+    year = ['N/A']
     for date in soup.findAll('div', {'id': 'lifespan'}):
-        # print('So we have to split here')
-        # print(date.contents)
-        # print(len(date.contents))
-        if len(date.contents) == 1:
-            if len(date.string) > 5:
-                date = str(date.string).strip()
-                i_dash = date.index('–')
-                if i_dash < 5: born_date = 'N/A'
-                else:
-                    born_date = date[0:i_dash-9]
-                    # i_born = born_date.index(',')
-                    # born_date = born_date[0:i_born] + born_date[i_born+1:]
-                die_date = date[i_dash+2:]
-                # i_die = die_date.index(',')
-                # die_date = die_date[0:i_die] + die_date[i_die+1:]
-                date = [born_date, die_date]
-            else: date = ['N/A', 'N/A']
-        else:
-            born_date = str(date.contents[2].string).strip()
-            # i_born = born_date.index(',')
-            # born_date = born_date[0:i_born] + born_date[i_born+1:]
-            date = [born_date, 'N/A']
-    # print(name + ',' + date)
-    return name + date
+        space = ' '
+        print(date.count(space))
+        for d_string in date.stripped_strings:
+            date_str = repr(d_string)
+            i_dash = d_string.find('–') #this is a special dash that I copied from the website
+            dash = d_string[15:16] # .decode('utf-8')
+            print(dash)
+            if i_dash >= 0:
+                death_date = [d_string[i_dash+1:].strip()]
+                birth_date = d_string[:i_dash-1]
+                comma = birth_date.find(',')
+                print(birth_date)
+                comma = birth_date.find(',')
+
+                print("comma is " + str(comma))
+                year = birth_date[comma+2:]
+
+                year = [year]
+                birth_date = [birth_date.strip()]
+
+                print(year)
+            else:
+                birth_date = d_string
+                birth_date = birth_date.strip()
+                print(birth_date)
+                comma = birth_date.find(',')
+                print("comma is " + str(comma))
+                year = birth_date[comma+2:]
+                birth_date = [birth_date]
+                year = [year]
+                print(year)
+
+    return name + year + birth_date + death_date
 
 
 def if_photos(soup):
@@ -66,6 +125,22 @@ def if_photos(soup):
         indicator = 'Present'
     # print(indicator)
     return indicator
+
+def desc_word_count(soup):
+    description_ = ''
+    body = soup.find("div", {"class": "body"})
+    ptags = body.findAll(True)
+    for tag in ptags:
+        if tag.name == "p":
+            description_ += tag.text + ' '
+            # print("Tag's next sibling is: " + str(tag.next_sibling.name))
+        if tag.name == "h3":
+            print("foundh3")
+            break
+    description_ = re.sub('[(){}<>]', '', description_)
+    count = len(description_.replace('\n', ' ').rstrip('?:!.,;()').split())
+    print([description_, count])
+    return[description_, count]
 
 
 def bio_word_count(soup):
@@ -81,7 +156,7 @@ def bio_word_count(soup):
 
 
 def wiki_link(soup):
-    # returns the whether
+    # returns the link of the wikipedia link if there is one
     wiki = 'Absent'
     for link in soup.findAll('a'):
         href = str(link.get('href'))
@@ -137,6 +212,8 @@ def archives(soup):
 def add_resources(soup):
     return contents_after(soup, 'h3', 'Additional Resources')
 
+def memoirs3(soup):
+    return contents_after(soup, 'h3', 'Memoirs')
 
 def memoirs(soup):
     return contents_after(soup, 'h5', 'Memoirs')
@@ -161,6 +238,31 @@ def resume(soup):
     return counts_after(soup, 'h5', 'Résumé')
 
 
+## for METHODOLOGIES
+def linksandrefs(soup):
+    # returns a count of the number of links and references on the page
+    element = soup.find('h3', string = 'Links and References')
+    if element is None: return 'N/A'
+    else:
+        result = 0
+        while True:
+            print(element)
+            element = element.next_sibling
+            if element is None: break
+            if len(str(element)) < 5:
+                continue
+            if element.name != 'p': break
+            result += 1
+    return result
+    # return counts_after(soup, 'h3', 'Links and References')
+
+def indiv_count(soup):
+    # returns a count of the associated historic individuals
+    indivs = soup.findAll('li')
+    result = len(indivs)
+    return result
+
+## end METHODOLOGIES
 def obituaries(soup):
     return counts_after(soup, 'h3', 'Obituaries')
 

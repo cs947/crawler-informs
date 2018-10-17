@@ -44,6 +44,7 @@ for i in personal_links:
                 born_date = d_string
                 born_date = born_date.strip()
                 print(born_date)
+                death_date = 'N/A'
         #if len(date.contents) == 1:
 
 
@@ -65,4 +66,38 @@ def find_date(soup):
             print(date[:i_dash])
             print(birth_date)
 
+    return name + date
+
+
+#copied from Functions
+def find_date(soup):
+    name = soup.title.string[0:-10]
+    name = name.split(',')
+    print(name)
+    if len(name) > 2:
+        name = [name[0], ','.join(name[1:])]
+    for date in soup.findAll('div', {'id': 'lifespan'}):
+        # print('So we have to split here')
+        # print(date.contents)
+        # print(len(date.contents))
+        if len(date.contents) == 1:
+            if len(date.string) > 5:
+                date = str(date.string).strip()
+                i_dash = date.index('–')
+                if i_dash < 5: born_date = 'N/A'
+                else:
+                    born_date = date[0:i_dash-9]
+                    # i_born = born_date.index(',')
+                    # born_date = born_date[0:i_born] + born_date[i_born+1:]
+                die_date = date[i_dash+2:]
+                # i_die = die_date.index(',')
+                # die_date = die_date[0:i_die] + die_date[i_die+1:]
+                date = [born_date, die_date]
+            else: date = ['N/A', 'N/A']
+        else:
+            born_date = str(date.contents[2].string).strip()
+            # i_born = born_date.index(',')
+            # born_date = born_date[0:i_born] + born_date[i_born+1:]
+            date = [born_date, 'N/A']
+    # print(name + ',' + date)
     return name + date

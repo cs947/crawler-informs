@@ -37,19 +37,19 @@ def find_info():
             nonAcaIns = f.non_academic_ins(parse)
             meth = f.methodologies(parse)
             appl = f.app_areas(parse)
-            interveiw = f.oral_hist(parse)
+            interview = f.oral_hist(parse)
 
             toWrite = [nameDate[0], nameDate[1], nameDate[2], f.if_photos(parse), f.bio_word_count(parse),
                        f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0], acaIns[1],
                        nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], f.image(parse), f.resume(parse),
-                       interveiw[0], interveiw[1], interveiw[2], f.memoirs(parse), f.obituaries(parse), f.awards(parse),
+                       interview[0], interview[1], interview[2], f.memoirs(parse), f.obituaries(parse), f.awards(parse),
                        f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)]
             writer.writerow(toWrite)
     """
 
     time = str(datetime.datetime.now())[:-7]
     print(time)
-    toWrite = [[time], ['Last Name', 'First Name', 'Birth Date', 'Death Date', 'Main Photo', 'Brief Bio Word Count',
+    toWrite = [['Last Name', 'First Name', 'Year', 'Birth Date', 'Death Date', 'Main Photo', 'Brief Bio Word Count',
                         'Other Bio', 'Wikipedia', 'Education', 'Mathematics Genealogy',
                         'Historic Academic Institutions',
                         'Additional Academic Institutions', 'Historic Non-Academic Institutions',
@@ -58,25 +58,33 @@ def find_info():
                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
                         'Oral History Interview - Other - Reference', 'Memoir', 'Obituaries', 'Awards and Honors',
                         'Professional Service', 'Library Archives', 'Selected Publications', 'Additional Resources']]
-
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+    j = 0
     for i in personal_links:
-        source_code = requests.get(i)
-        text = source_code.text
-        parse = BeautifulSoup(text, "html.parser")
-        nameDate = f.find_date(parse)
-        acaIns = f.academic_ins(parse)
-        nonAcaIns = f.non_academic_ins(parse)
-        meth = f.methodologies(parse)
-        appl = f.app_areas(parse)
-        interveiw = f.oral_hist(parse)
+        print()
+        try:
+            source_code = requests.get(i, headers = headers)
+            text = source_code.text
+            parse = BeautifulSoup(text, "html.parser")
+            nameDate = f.find_date(parse)
+            acaIns = f.academic_ins(parse)
+            nonAcaIns = f.non_academic_ins(parse)
+            meth = f.methodologies(parse)
+            appl = f.app_areas(parse)
+            interview = f.oral_hist(parse)
 
-        toWrite.append([nameDate[0], nameDate[1], nameDate[2], nameDate[3], f.if_photos(parse), f.bio_word_count(parse),
-                        f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0],
-                        acaIns[1],
-                        nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], f.image(parse), f.resume(parse),
-                        interveiw[0], interveiw[1], interveiw[2], f.memoirs(parse), f.obituaries(parse),
-                        f.awards(parse),
-                        f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)])
+            toWrite.append([nameDate[0], nameDate[1], nameDate[2], nameDate[3], nameDate[4],
+                            f.if_photos(parse), f.bio_word_count(parse),
+                            f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0],
+                            acaIns[1],
+                            nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], f.image(parse), f.resume(parse),
+                            interview[0], interview[1], interview[2], f.memoirs(parse), f.obituaries(parse),
+                            f.awards(parse),
+                            f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)])
+        except AttributeError as a:
+            print(a)
+            j = j + 1
+            personal_links.append(i)
 
     df = pd.DataFrame(toWrite)
     writer = pd.ExcelWriter('inform bio ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
@@ -118,7 +126,7 @@ def find_info():
     worksheet.set_column('AB:AB', 50, text_format)
     worksheet.set_column('AC:AC', 8, text_format)
     worksheet.set_column('AD:AD', 50, text_format)
-    worksheet.freeze_panes(2, 2)  # Freeze first row and first 2 columns.
+    worksheet.freeze_panes(1, 1)  # Freeze first row and first column.
 
     writer.save()
     print("Finished! Excel file generated under", os.getcwd(), "\n")
