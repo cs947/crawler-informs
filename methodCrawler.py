@@ -6,6 +6,12 @@ import datetime
 import os
 
 def find_method_info():
+    thisdict =	{
+        "acinfo": 'Academic-Institutions/',
+        "noacinfo": 'Non-Academic-Institutions/',
+        "appinfo": 'O.R.-Application-Areas',
+        "minfo": 'O.R.-Methodologies/',
+    }
 
     toWrite = [['Title', 'Description', 'Desc Word Count', 'Links and References', 'Indivs. Count',
                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
@@ -13,18 +19,18 @@ def find_method_info():
                         'Memoirs and Autobiographies', 'Library Archives']]
     time = str(datetime.datetime.now())[:-7]
     print(time)
-    writer = pd.ExcelWriter('Content Analysis ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
-    contentarea = ['Academic-Institutions/', 'Non-Academic-Institutions/' ,
-                    'O.R.-Application-Areas', 'O.R.-Methodologies/']
+    writer = pd.ExcelWriter(thisdict["minfo"] + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
 
-    thisdict =	{
-        "minfo": 'O.R.-Methodologies/',
-        "model": "Mustang",
-        "year": 1964
-        }
     # m_page = ['', '(offset)/20']
     m_page = ['', '(offset)/20']
-    m_links = f.find_m_links(thisdict["minfo"], m_page)
+    pages = {
+        "acinfo": ['', '(offset)/20'],
+        "noacinfo": ['', '(offset)/20', '(offset)/40'],
+        "appinfo": ['', '(offset)/20'],
+        "minfo": ['', '(offset)/20'],
+    }
+
+    m_links = f.find_m_links(thisdict["minfo"], pages["minfo"])
     print(m_links)
     for i in m_links:
         print(i)
