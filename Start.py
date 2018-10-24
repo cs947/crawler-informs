@@ -5,7 +5,8 @@ from institutions import find_inst_info
 
 control = "continue"
 info = "Choose command from following list\n"\
-       "-- binfo : Generate a spreadsheet of biographical profiles Approx. 15 mins\n" \
+       "-- all : Executes all of the below commands\n"
+       "-- binfo : Generate a spreadsheet of biographical profiles Approx. 5 mins\n" \
        "-- ainfo : Generate a spreadsheet of Academic Institutions links info Approx 5 mins\n" \
        "-- noainfo : Generate a spreadsheet of Non Academic Institutions links info Approx 5 mins\n" \
        "-- appinfo : Generate a spreadsheet of Application Areas links info Approx 5 mins\n" \

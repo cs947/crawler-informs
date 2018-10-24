@@ -47,8 +47,6 @@ def find_title(soup):
     return title
 
 def find_date(soup):
-    #print("in find_date and this is soup: " + str(soup))
-    print('souptitlesstrin010' + soup.title.string[0:-10])
     name = soup.title.string[0:-10]
     name = name.split(',')
     print(name)
@@ -59,11 +57,9 @@ def find_date(soup):
     year = ['N/A']
     for date in soup.findAll('div', {'id': 'lifespan'}):
         space = ' '
-        print(date)
-        print(type(date))
-        print(date.text.count(space))
+        # print(date.text.count(space))
         for d_string in date.stripped_strings:
-            date_str = repr(d_string)
+            # date_str = repr(d_string)
             i_dash = d_string.find('–') #this is a special dash that I copied from the website
             dash = d_string[15:16] # .decode('utf-8')
             print(dash)
@@ -71,27 +67,24 @@ def find_date(soup):
                 death_date = [d_string[i_dash+1:].strip()]
                 birth_date = d_string[:i_dash-1]
                 comma = birth_date.find(',')
-                # print(birth_date)
-                comma = birth_date.find(',')
-
-                print("comma is " + str(comma))
                 year = birth_date[comma+2:]
-
+                if comma == -1:
+                    year = birth_date[-5:]
+                    print("new year is + " + year)
                 year = [year]
                 birth_date = [birth_date.strip()]
-
-                print(year)
             else:
                 birth_date = d_string
                 birth_date = birth_date.strip()
-                print(birth_date)
                 comma = birth_date.find(',')
-                print("comma is " + str(comma))
                 year = birth_date[comma+2:]
+                if comma == -1:
+                    year = birth_date[-5:]
+                    print("new year is + " + year)
                 birth_date = [birth_date]
                 year = [year]
-                print(year)
 
+    print(name + year + birth_date + death_date)
     return name + year + birth_date + death_date
 
 
@@ -192,6 +185,7 @@ def add_resources(soup):
     return contents_after(soup, 'h3', 'Additional Resources')
 
 def memoirs3(soup):
+    print()
     return contents_after(soup, 'h3', 'Memoirs')
 
 def memoirs(soup):
