@@ -5,6 +5,7 @@ from institutions import find_inst_info
 
 control = "continue"
 info = "Choose command from following list\n"\
+<<<<<<< HEAD
        "-- all : Executes all of the below commands\n" \
        "-- binfo : Generate a spreadsheet of biographical profiles Approx. 5 mins\n" \
        "-- ainfo : Generate a spreadsheet of Academic Institutions links info Approx. 5 mins\n" \
@@ -12,6 +13,11 @@ info = "Choose command from following list\n"\
        "-- appinfo : Generate a spreadsheet of Application Areas links info Approx. 5 mins\n" \
        "-- minfo : Generate a spreadsheet of Methodologies links info Approx. 5 mins\n" \
        "-- find : Find all the pages under informs. Approx. 10 mins\n" \
+=======
+       "-- binfo : Generate a spreadsheet of personal information Approx. 15 min\n" \
+       "-- minfo : Generate a spreadsheet of Methodologies links info\n" \
+       "-- find : Find all the pages under informs. Approx. 10 min\n" \
+>>>>>>> parent of 2dfe61f... changed body to 'content-container'
        "-- link : Output dead links after 'find' is excuted. Approx. 4 hrs\n" \
        "-- exit : Exit the program\n"
 
@@ -38,8 +44,10 @@ while True:
         find_internal_links()
     elif control == "link":
         generate_link_dataframe()
-    elif control == "minfo" or control == "ainfo" or control == "noainfo" or control == "appinfo" :
-        find_method_info(control)
+    elif control == "minfo":
+        find_method_info()
+    elif control == "ainfo":
+        find_inst_info(control)
     else:
         print("Command not recognized\n")
 
