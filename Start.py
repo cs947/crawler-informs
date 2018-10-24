@@ -23,7 +23,14 @@ while True:
     if control == "exit":
         print("Exited the program\n")
         break
-
+    elif control == "all":
+        find_info()
+        find_internal_links()
+        generate_link_dataframe()
+        find_method_info("minfo")
+        find_method_info("ainfo")
+        find_method_info("noainfo")
+        find_method_info("appinfo")
     elif control == "binfo":
         find_info()
     elif control == "find":

@@ -8,7 +8,6 @@ def find_links(all_letters):
     links = []
     for letter in all_letters:
         url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/(alpha)/' + letter
-        # print(url)
         sourcecode = requests.get(url)
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
@@ -21,7 +20,6 @@ def find_links(all_letters):
             if string.startswith('/Explore/History-of-O.R.-Excellence/Biographical-Profiles/') and \
                     string[58].isalpha():
                 links.append('https://www.informs.org' + href)
-    #print(links)
     return links
 
 def find_m_links(area, m_page):
@@ -29,7 +27,6 @@ def find_m_links(area, m_page):
     links = []
     for page in m_page:
         url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/' + area + page
-        # print(url)
         sourcecode = requests.get(url)
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
@@ -62,7 +59,9 @@ def find_date(soup):
     year = ['N/A']
     for date in soup.findAll('div', {'id': 'lifespan'}):
         space = ' '
-        print(date.count(space))
+        print(date)
+        print(type(date))
+        print(date.text.count(space))
         for d_string in date.stripped_strings:
             date_str = repr(d_string)
             i_dash = d_string.find('–') #this is a special dash that I copied from the website
@@ -72,7 +71,7 @@ def find_date(soup):
                 death_date = [d_string[i_dash+1:].strip()]
                 birth_date = d_string[:i_dash-1]
                 comma = birth_date.find(',')
-                print(birth_date)
+                # print(birth_date)
                 comma = birth_date.find(',')
 
                 print("comma is " + str(comma))
