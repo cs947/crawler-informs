@@ -30,8 +30,8 @@ def find_m_links(area, m_page):
         sourcecode = requests.get(url)
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
-        for link in soup.findAll('a'):
-            print(link)
+        body = soup.find("div", {"class": "block-row"})
+        for link in body.findAll('a'):
             href = link.get('href')
             string = str(href)
             if len(string) < 54:

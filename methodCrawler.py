@@ -9,7 +9,7 @@ def find_method_info(info):
     thisdict =	{
         "ainfo": 'Academic-Institutions/',
         "noainfo": 'Non-Academic-Institutions/',
-        "appinfo": 'O.R.-Application-Areas',
+        "appinfo": 'O.R.-Application-Areas/',
         "minfo": 'O.R.-Methodologies/',
     }
 
@@ -24,10 +24,10 @@ def find_method_info(info):
     # m_page = ['', '(offset)/20']
     m_page = ['', '(offset)/20']
     pages = {
-        "ainfo": ['', '(offset)/20'],
+        "ainfo":   ['', '(offset)/20'],
         "noainfo": ['', '(offset)/20', '(offset)/40'],
         "appinfo": ['', '(offset)/20'],
-        "minfo": ['', '(offset)/20'],
+        "minfo":   ['', '(offset)/20'],
     }
 
     m_links = f.find_m_links(thisdict[info], pages[info])
