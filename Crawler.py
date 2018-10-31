@@ -10,43 +10,6 @@ def find_info():
     # creates the excel spreadsheet of biographical profiles
     group_letters = ['A', 'C', 'F', 'I', 'M', 'O', 'S', 'V'] #comment for testing
     personal_links = f.find_links(group_letters)
-    """
-    source_code = requests.get(personal_links[2])
-    text = source_code.text
-    parse = BeautifulSoup(text, "html.parser")
-    print(add_ins(parse))
-
-    """
-    """
-    with open('informs.csv', 'w') as f1:
-        writer = csv.writer(f1, delimiter=',', lineterminator='\n',)
-        writer.writerow(['Name', 'Born Date', 'Die Date', 'Main Photo', 'Brief Bio Word Count', 'Other Bio',
-                         'Wikipedia', 'Education', 'Mathematics Genealogy', 'Historic Academic Institutions',
-                         'Additional Academic Institutions', 'Historic Non-Academic Institutions',
-                         'Additional Non-Academic Institutions', 'Historic Methodologies', 'Other Methodologies',
-                         'Historic Application Areas', 'Other Application Areas', 'Image Gallery', 'Resumes',
-                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
-                         'Oral History Interview - Other - Reference', 'Memoir', 'Obituaries', 'Awards and Honors',
-                         'Professional Service', 'Library Archives', 'Selected Publications', 'Additional Resources'])
-        for i in personal_links:
-            source_code = requests.get(i)
-            text = source_code.text
-            parse = BeautifulSoup(text, "html.parser")
-            nameDate = f.find_date(parse)
-            acaIns = f.academic_ins(parse)
-            nonAcaIns = f.non_academic_ins(parse)
-            meth = f.methodologies(parse)
-            appl = f.app_areas(parse)
-            interview = f.oral_hist(parse)
-
-            toWrite = [nameDate[0], nameDate[1], nameDate[2], f.if_photos(parse), f.bio_word_count(parse),
-                       f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0], acaIns[1],
-                       nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], f.image(parse), f.resume(parse),
-                       interview[0], interview[1], interview[2], f.memoirs(parse), f.obituaries(parse), f.awards(parse),
-                       f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)]
-            writer.writerow(toWrite)
-    """
-
     time = str(datetime.datetime.now())[:-7]
     print(time)
     toWrite = [['Last Name', 'First Name', 'Year', 'Birth Date', 'Death Date', 'Main Photo', 'Brief Bio Word Count',

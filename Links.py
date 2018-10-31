@@ -81,18 +81,12 @@ def check(link):
     #                   status code given by the link,
     #                   error message if there is one]
     # checks if the link actually has a problem or not
-    '''
-    if "pubsonline" in link[1]:
-        return [link[0], link[1], 403]
-    elif "linkedin" in link[1]:
-        return [link[0], link[1], 999]
-    '''
     # link[0] is link, link[1] is text
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     code= 0
     error = ""
     try:
-        sourcecode = requests.get(link[0], headers = headers)
+        sourcecode = requests.get(link[0], headers = headers, allow_redirects = True)
         code = sourcecode.status_code
         #code = requests.get(link[0], headers = headers).status_code #testing the ANZIAM link
         if link[0].find('jstor') >=0:
@@ -119,10 +113,6 @@ def check(link):
 
 def find_math_genea(link, link_pair):
     #
-    print("link is :" + str(link))
-    print("link_pair is: " + str(link_pair))
-    print("link_pair[0] is: " + str(link_pair[0]))
-    print("link_pair[1] is: " + str(link_pair[1]))
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     parent = "https://www.informs.org" + link
     child = str(link_pair[0])
@@ -190,7 +180,6 @@ def generate_link_dataframe():
                     #print(list_towrite)
             print("Page number: " + str(page_num) + "/" + str(page_num_tot) + " Link number: " + str(link_num))
         except TypeError as e:
-            pdb.set_trace()
             print("Caught TypeError")
 
     # links_list.to_pickle("dead_link.pkl")
