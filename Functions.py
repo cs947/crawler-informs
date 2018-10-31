@@ -100,14 +100,12 @@ def if_photos(soup):
 def desc_word_count(soup):
     description_ = ''
     body = soup.find("div", {"class": "content-container"})
-    print("BODY IS: " + str(body))
     ptags = body.findAll(True)
     for tag in ptags:
         if tag.name == "p":
             description_ += tag.text + ' '
-            # print("Tag's next sibling is: " + str(tag.next_sibling.name))
-        if tag.name == "h3":
-            print("foundh3")
+        if tag.name == "h3" and (tag.text == "Links and References" or \
+                                 tag.text == "Associated Historic Individuals"):
             break
     description_ = re.sub('[(){}<>]', '', description_)
     count = len(description_.replace('\n', ' ').rstrip('?:!.,;()').split())
@@ -219,7 +217,6 @@ def linksandrefs(soup):
     else:
         result = 0
         while True:
-            print(element)
             element = element.next_sibling
             if element is None: break
             if len(str(element)) < 5:

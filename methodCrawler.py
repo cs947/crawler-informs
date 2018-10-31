@@ -21,7 +21,6 @@ def find_method_info(info):
     print(time)
     writer = pd.ExcelWriter(thisdict[info][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
 
-    # m_page = ['', '(offset)/20']
     m_page = ['', '(offset)/20']
     pages = {
         "ainfo":   ['', '(offset)/20'],
@@ -39,7 +38,6 @@ def find_method_info(info):
         parse = BeautifulSoup(text, "html.parser")
         body = parse.find("div", {"class": "content-container"})
         title = f.find_title(parse)
-        print(title)
         desc_word_count = f.desc_word_count(parse)
         indiv_count = f.indiv_count(body)
         interview = f.oral_hist(parse)

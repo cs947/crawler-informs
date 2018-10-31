@@ -13,7 +13,7 @@ info = "Choose command from following list\n"\
        "-- minfo : Generate a spreadsheet of Methodologies links info Approx. 5 mins\n" \
        "-- find : Find all the pages under informs. Approx. 10 mins\n" \
        "-- link : Output dead links after 'find' is excuted. Approx. 4 hrs\n" \
-       "-- exit : Exit the program\n"
+       "-- quit : Quit the program\n"
 
 print(info)
 
@@ -21,8 +21,8 @@ while True:
 
     control = input("Please input command\n")
 
-    if control == "exit":
-        print("Exited the program\n")
+    if control == "quit":
+        print("Quit the program\n")
         break
     elif control == "all":
         find_info()

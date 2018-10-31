@@ -5,7 +5,8 @@ import re
 
 links = [
     # "https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Sargent-Robert-G"
-    "https://www.informs.org/Explore/History-of-O.R.-Excellence/O.R.-Methodologies/Optimization-Theory"
+    "https://www.informs.org/Explore/History-of-O.R.-Excellence/Academic-Institutions/Cornell-University"
+    # "https://www.informs.org/Explore/History-of-O.R.-Excellence/Academic-Institutions/Case-Western-Reserve-University-Case-Institute-of-Technology"
 ]
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
@@ -22,21 +23,22 @@ for x in links:
       body = soup.find("div", {"class": "body"})
       # for link in body.findAll('a'):
       #     print(link)
-      result = 'beg'
-      element = soup.find('h3', string = 'Links and References')
-      if element is None: result = 'N/A'
-      else:
-          result = 0
-          while True:
-              print(element)
-              element = element.next_sibling
-              print("after " + str(element))
-              if element is None: break
-              if len(str(element)) < 5:
-                  continue
-              if element.name != 'p': break
-              result += 1
-      print(result)
+
+      description_ = ''
+      body = soup.find("div", {"class": "content-container"})
+      ptags = body.findAll(True)
+      print(ptags)
+      for tag in ptags:
+          print("tag is ")
+          print(tag)
+          if tag.name == "p":
+              description_ += tag.text + ' '
+          if tag.name == "h3" and (tag.text == "Links and References" or \
+                                  tag.text == "Associated Historic Individuals"):
+              break
+      description_ = re.sub('[(){}<>]', '', description_)
+      count = len(description_.replace('\n', ' ').rstrip('?:!.,;()').split())
+      print([description_, count])
 
       print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
       print("try " + str(sourcecode.status_code))
