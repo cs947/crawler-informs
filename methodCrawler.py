@@ -21,15 +21,8 @@ def find_method_info(info):
     print(time)
     writer = pd.ExcelWriter(thisdict[info][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
 
-    m_page = ['', '(offset)/20']
-    pages = {
-        "ainfo":   ['', '(offset)/20'],
-        "noainfo": ['', '(offset)/20', '(offset)/40'],
-        "appinfo": ['', '(offset)/20'],
-        "minfo":   ['', '(offset)/20'],
-    }
 
-    m_links = f.find_m_links(thisdict[info], pages[info])
+    m_links = f.find_m_links(thisdict[info])
     print(m_links)
     for i in m_links:
         print(i)
@@ -53,14 +46,16 @@ def find_method_info(info):
 
     workbook = writer.book
     method = writer.sheets['methodologies']
-
     text_format = workbook.add_format({'text_wrap': True})
     text_format.set_align('top')
-
+    # celld2 = workbook.cell('D2')
+    # celld2.set_align('right')
     title_format = workbook.add_format({'text_wrap': True})
     title_format.set_bold()  # Turns bold on.
     title_format.set_align('top')
-    method.freeze_panes(1, 1)  # Freeze first row and first 2 columns.
 
+    method.set_column('A', 30, text_format)
+
+    method.freeze_panes(1, 1)  # Freeze first row and first 2 columns.
     writer.save()
     print("Finished! Excel file generated under", os.getcwd(), "\n")

@@ -9,7 +9,7 @@ import os
 def find_info():
     # creates the excel spreadsheet of biographical profiles
     group_letters = ['A', 'C', 'F', 'I', 'M', 'O', 'S', 'V'] #comment for testing
-    personal_links = f.find_links(group_letters)
+    personal_links = f.bfind_links(group_letters)
     time = str(datetime.datetime.now())[:-7]
     print(time)
     toWrite = [['Last Name', 'First Name', 'Year', 'Birth Date', 'Death Date', 'Main Photo', 'Brief Bio Word Count',
@@ -17,7 +17,7 @@ def find_info():
                         'Historic Academic Institutions',
                         'Additional Academic Institutions', 'Historic Non-Academic Institutions',
                         'Additional Non-Academic Institutions', 'Historic Methodologies', 'Other Methodologies',
-                        'Historic Application Areas', 'Other Application Areas', 'Image Gallery', 'Resumes',
+                        'Historic Application Areas', 'Other Application Areas', 'Image Gallery', 'Image Count', 'Resumes',
                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
                         'Oral History Interview - Other - Reference', 'Memoir', 'Obituaries', 'Awards and Honors',
                         'Professional Service', 'Library Archives', 'Selected Publications', 'Additional Resources']]
@@ -34,13 +34,15 @@ def find_info():
             nonAcaIns = f.non_academic_ins(parse)
             meth = f.methodologies(parse)
             appl = f.app_areas(parse)
+            image = f.image(parse)
             interview = f.oral_hist(parse)
+
 
             toWrite.append([nameDate[0], nameDate[1], nameDate[2], nameDate[3], nameDate[4],
                             f.if_photos(parse), f.bio_word_count(parse),
                             f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0],
                             acaIns[1],
-                            nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], f.image(parse), f.resume(parse),
+                            nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], image[0], image[1], f.resume(parse),
                             interview[0], interview[1], interview[2], f.memoirs(parse), f.obituaries(parse),
                             f.awards(parse),
                             f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)])
@@ -62,33 +64,29 @@ def find_info():
     title_format.set_align('top')
 
     worksheet.set_row(1, None, title_format)
-    worksheet.set_column('A:D', 16, text_format)
-    worksheet.set_column('E:E', 8, text_format)
-    worksheet.set_column('F:F', 8, text_format)
-    worksheet.set_column('G:G', 50, text_format)
-    worksheet.set_column('H:H', 40, text_format)
-    worksheet.set_column('I:I', 50, text_format)
-    worksheet.set_column('J:J', 50, text_format)
-    worksheet.set_column('K:K', 50, text_format)
-    worksheet.set_column('L:L', 50, text_format)
-    worksheet.set_column('M:M', 20, text_format)
-    worksheet.set_column('N:N', 35, text_format)
-    worksheet.set_column('O:O', 35, text_format)
-    worksheet.set_column('P:P', 8, text_format)
-    worksheet.set_column('Q:Q', 30, text_format)
-    worksheet.set_column('R:R', 8, text_format)
-    worksheet.set_column('S:S', 8, text_format)
-    worksheet.set_column('T:T', 8, text_format)
-    worksheet.set_column('U:U', 8, text_format)
-    worksheet.set_column('V:V', 8, text_format)
-    worksheet.set_column('W:W', 8, text_format)
-    worksheet.set_column('X:X', 50, text_format)
-    worksheet.set_column('Y:Y', 8, text_format)
-    worksheet.set_column('Z:Z', 50, text_format)
-    worksheet.set_column('AA:AA', 50, text_format)
-    worksheet.set_column('AB:AB', 50, text_format)
-    worksheet.set_column('AC:AC', 8, text_format)
-    worksheet.set_column('AD:AD', 50, text_format)
+    worksheet.set_column('A:X', 16, text_format)
+    # worksheet.set_column('E:E', 8, text_format)
+    # worksheet.set_column('F:F', 8, text_format)
+    # worksheet.set_column('G:G', 50, text_format)
+    # worksheet.set_column('H:H', 40, text_format)
+    # worksheet.set_column('I:I', 50, text_format)
+    # worksheet.set_column('J:J', 50, text_format)
+    # worksheet.set_column('K:K', 50, text_format)
+    # worksheet.set_column('L:L', 50, text_format)
+    # worksheet.set_column('M:M', 20, text_format)
+    # worksheet.set_column('N:N', 35, text_format)
+    # worksheet.set_column('O:O', 35, text_format)
+    # worksheet.set_column('P:P', 8, text_format)
+    # worksheet.set_column('Q:Q', 30, text_format)
+    # worksheet.set_column('R:R', 8, text_format)
+    # worksheet.set_column('S:S', 8, text_format)
+    # worksheet.set_column('T:T', 8, text_format)
+    # worksheet.set_column('U:U', 8, text_format)
+    # worksheet.set_column('V:V', 8, text_format)
+    # worksheet.set_column('W:W', 20, text_format)
+    # worksheet.set_column('X:X', 50, text_format)
+    #worksheet.set_column('W:Z', 20, text_format)
+    worksheet.set_column('W:AF', 20, text_format)
     worksheet.freeze_panes(1, 1)  # Freeze first row and first column.
 
     writer.save()

@@ -56,6 +56,8 @@ def ret_int_link(link):
 def ret_all_link(link):
     # returns all the links on the page given by the link argument
     # excludes the header and footer
+    print(link)
+
     try:
         sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
     except Exception as e:
@@ -63,15 +65,24 @@ def ret_all_link(link):
         return []
     text = sourcecode.text
     soup = BeautifulSoup(text, "html.parser")
-    main = soup.main
+    main = soup.find("div", {"class": "content-container"})
     children = []
     for url in main.findAll('a'):
         href = url.get('href')
         href_str = str(href)
+        print("this is the link: " + str(href_str))
+        if len(href_str) > 250:
+            print("this next link is longer than 250 chars")
+            print(href_str)
+        if (href_str == "https://www.informs.org/Archive/Biographical-profiles-ARCHIVE/Barnett-Arnold-I"):
+            print(href_str)
+            print(request.get(href_str).status_code)
         # if href_str.startswith('/') and "?" not in href_str and "#" not in href_str:
         #     children.append(["https://www.informs.org" + href_str, url.text.replace('\n', '')])
         if href_str.startswith('http'): # and "?" not in href_str and "#" not in href_str and "pubsonline" not in href_str and "linkedin" not in href_str and "analytics-magazine.org" not in href_str:
             children.append([href_str, url.text.replace('\n', '')])
+    if link == "/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas/Environment-Energy-and-Sustainability":
+        print(children)
     return children
 
 
@@ -112,7 +123,8 @@ def check(link):
         return []
 
 def find_math_genea(link, link_pair):
-    #
+    # returns a list of Mathematical Genealogy links that do not give a 404 but
+    # have the wrong ID number and the page is not found
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
     parent = "https://www.informs.org" + link
     child = str(link_pair[0])
@@ -124,9 +136,6 @@ def find_math_genea(link, link_pair):
         if text.find("You have specified an ID that does not exist in the database.") >= 0:
             foo = [parent, child, code, text]
             print(foo)
-        #soup = BeautifulSoup(text, "html.parser")
-        #text = soup.find_all(href = child)[0].parent.text
-        #print(foo)
         return foo
     except Exception as e:
         print(e)
@@ -144,7 +153,7 @@ def check_list(list_towrite):
         text = "link"
     soup = BeautifulSoup(text, "html.parser")
     list_towrite[2] = soup.find_all(href = child)[0].parent.text
-    print(list_towrite[2])
+    # print(list_towrite[2])
     return list_towrite
 
 def generate_link_dataframe():
@@ -165,7 +174,7 @@ def generate_link_dataframe():
         page_num += 1
         # if page_num == 2: break # for testing
         all_links = ret_all_link(link)
-        print(all_links)
+        # print(all_links)
         try:
             for link_pair in all_links:
                 ultimate_links.append(link_pair)
@@ -199,6 +208,7 @@ def output_dead_link(df, mgdf=pd.DataFrame(), ultldf=pd.DataFrame()):
     workbook = writer.book
     worksheet = writer.sheets['inform']
     text_format = workbook.add_format({'text_wrap': False})
+    text_format.set_align('left')
     title_format = workbook.add_format({'text_wrap': True})
     title_format.set_bold()  # Turns bold on.
     title_format.set_align('top')

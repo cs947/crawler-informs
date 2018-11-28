@@ -22,23 +22,41 @@ def find_links(all_letters):
                 links.append('https://www.informs.org' + href)
     return links
 
-def find_m_links(area, m_page):
-    # returns a list of links in O.R. Methodologies
+def bfind_links(all_letters):
+    # returns a list of all the Briographical Profile links on INFORMS
     links = []
-    for page in m_page:
-        url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/' + area + page
+    for letter in all_letters:
+        url = 'http://informs.beaconfire.us/Explore/History-of-O.R.-Excellence/Biographical-Profiles/(alpha)/' + letter
         sourcecode = requests.get(url)
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
-        body = soup.find("div", {"class": "block-row"})
-        for link in body.findAll('a'):
+        for link in soup.findAll('a'):
             href = link.get('href')
             string = str(href)
+            # print(string)
             if len(string) < 54:
                 continue
-            if string.startswith('/Explore/History-of-O.R.-Excellence/' + area) and \
-                string.find('(') == -1:
+            if string.startswith('/Explore/History-of-O.R.-Excellence/Biographical-Profiles/') and \
+                    string[58].isalpha():
                 links.append('https://www.informs.org' + href)
+    return links
+
+def find_m_links(area):
+    # returns a list of links in O.R. Methodologies
+    links = []
+    url = 'https://www.informs.org/Explore/History-of-O.R.-Excellence/' + area
+    sourcecode = requests.get(url)
+    txt = sourcecode.text
+    soup = BeautifulSoup(txt, "html.parser")
+    body = soup.find("div", {"class": "block-row"})
+    for link in body.findAll('a'):
+        href = link.get('href')
+        string = str(href)
+        if len(string) < 54:
+            continue
+        if string.startswith('/Explore/History-of-O.R.-Excellence/' + area) and \
+            string.find('(') == -1:
+            links.append('https://www.informs.org' + href)
     return links
 
 def find_title(soup):
@@ -140,7 +158,7 @@ def wiki_link(soup):
 
 def contents_after(soup, name, tag_string):
     element = soup.find(name, string = tag_string)
-    if element is None: return 'N/A'
+    if element is None: return 0
     else:
         result = []
         while True:
@@ -213,7 +231,7 @@ def resume(soup):
 def linksandrefs(soup):
     # returns a count of the number of links and references on the page
     element = soup.find('h3', string = 'Links and References')
-    if element is None: return 'N/A'
+    if element is None: return 0
     else:
         result = 0
         while True:
@@ -317,13 +335,20 @@ def oral_hist(soup):
 
 def image(soup):
     tag = soup.find('h3', string = 'Image Gallery')
-    if tag is None: return 'Absent'
-    else: return 'Present'
+    if tag is None:
+        return ['Absent', 0]
+    else:
+        block = soup.find("div", {"class":"content-view-block block-slideshow_luminary"})
+        count = 0
+        for _ in block.findAll('img'):
+            count = count+1
+        return ['Present', count]
+
 
 
 def genealogy(soup):
     tag = soup.find('a', string = re.compile('^Mathematics Genealogy'))
-    if tag is None: return 'N/A'
+    if tag is None: return 0
     else: return str(tag.get('href'))
 
 
