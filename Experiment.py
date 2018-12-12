@@ -4,7 +4,8 @@ import pdb
 import re
 
 links = [
-    "https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Arnett"
+    # "https://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Arnett"
+    "https://informs.org/content/download/306080/2936018/file/GreenbergHistory.pdf"
     # "http://informs.beaconfire.us/Explore/History-of-O.R.-Excellence/Biographical-Profiles/Muckstadt-John-A"
 ]
 
@@ -22,6 +23,9 @@ for x in links:
       body = soup.find("div", {"class": "body"})
       # for link in body.findAll('a'):
       #     print(link)
+      print('head')
+      head = requests.head(x)
+      print(dict(head.headers))
 
       print("time elapsed is: " + str(sourcecode.elapsed.total_seconds()))
       print("try " + str(sourcecode.status_code))

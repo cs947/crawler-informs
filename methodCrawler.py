@@ -13,7 +13,7 @@ def find_method_info(info):
         "minfo": 'O.R.-Methodologies/',
     }
 
-    toWrite = [['Title', 'Description', 'Desc Word Count', 'Links and References', 'Indivs. Count',
+    toWrite = [['Title', 'Logo', 'Description', 'Desc Word Count', 'Links and References', 'Indivs. Count',
                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
                         'Oral History Interview - Other - Reference',
                         'Memoirs and Autobiographies', 'Library Archives']]
@@ -31,11 +31,12 @@ def find_method_info(info):
         parse = BeautifulSoup(text, "html.parser")
         body = parse.find("div", {"class": "content-container"})
         title = f.find_title(parse)
+        is_logo = f.find_logo(parse)
         desc_word_count = f.desc_word_count(parse)
         indiv_count = f.indiv_count(body)
         interview = f.oral_hist(parse)
 
-        toWrite.append([title, desc_word_count[0], desc_word_count[1], f.linksandrefs(parse),
+        toWrite.append([title, is_logo, desc_word_count[0], desc_word_count[1], f.linksandrefs(parse),
                         indiv_count, interview[0], interview[1], interview[2],
                         f.memoirs3(parse),
                         f.archives(parse)])
@@ -54,7 +55,7 @@ def find_method_info(info):
     title_format.set_bold()  # Turns bold on.
     title_format.set_align('top')
 
-    method.set_column('A', 30, text_format)
+    method.set_column('A:A', 30, text_format)
 
     method.freeze_panes(1, 1)  # Freeze first row and first 2 columns.
     writer.save()

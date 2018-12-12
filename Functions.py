@@ -26,7 +26,7 @@ def bfind_links(all_letters):
     # returns a list of all the Briographical Profile links on INFORMS
     links = []
     for letter in all_letters:
-        url = 'http://informs.beaconfire.us/Explore/History-of-O.R.-Excellence/Biographical-Profiles/(alpha)/' + letter
+        url = 'http://www.informs.org/Explore/History-of-O.R.-Excellence/Biographical-Profiles/(alpha)/' + letter
         sourcecode = requests.get(url)
         txt = sourcecode.text
         soup = BeautifulSoup(txt, "html.parser")
@@ -63,6 +63,14 @@ def find_title(soup):
     title = soup.find('h1').text
     print('title is ' + title)
     return title
+
+def find_logo(soup):
+    logo = soup.find('div', {'id': 'mainimage'})
+    if logo is None:
+        return 'None'
+    else:
+        img = logo.findAll('img')
+        return img
 
 def find_date(soup):
     name = soup.title.string[0:-10]

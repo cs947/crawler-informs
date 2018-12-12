@@ -66,17 +66,22 @@ def ret_all_link(link):
     text = sourcecode.text
     soup = BeautifulSoup(text, "html.parser")
     main = soup.find("div", {"class": "content-container"})
+    if main == None:
+        main = soup.find("div", {"class": "content"})
     children = []
     for url in main.findAll('a'):
         href = url.get('href')
         href_str = str(href)
-        print("this is the link: " + str(href_str))
+        # print("this is the link: " + str(href_str))
         if len(href_str) > 250:
             print("this next link is longer than 250 chars")
             print(href_str)
         if (href_str == "https://www.informs.org/Archive/Biographical-profiles-ARCHIVE/Barnett-Arnold-I"):
             print(href_str)
             print(request.get(href_str).status_code)
+        if (str(href_str) == "/Explore/History-of-O.R.-Excellence/Documents/Bernard-O.-Koopman-Search-and-Screening-1946"):
+            print('current debug')
+            print(main)
         # if href_str.startswith('/') and "?" not in href_str and "#" not in href_str:
         #     children.append(["https://www.informs.org" + href_str, url.text.replace('\n', '')])
         if href_str.startswith('http'): # and "?" not in href_str and "#" not in href_str and "pubsonline" not in href_str and "linkedin" not in href_str and "analytics-magazine.org" not in href_str:
