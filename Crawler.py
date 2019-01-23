@@ -34,20 +34,28 @@ def find_info():
             nonAcaIns = f.non_academic_ins(parse)
             meth = f.methodologies(parse)
             appl = f.app_areas(parse)
-            image = f.image(parse)
+            img_gal = f.if_img_gall(parse)
+            # image = f.image_gall(parse)
             interview = f.oral_hist(parse)
 
-
-            toWrite.append([nameDate[0], nameDate[1], nameDate[2], nameDate[3], nameDate[4],
-                            f.if_photos(parse), f.bio_word_count(parse),
+            final = [nameDate[0], nameDate[1], nameDate[2], nameDate[3], nameDate[4],
+                            f.if_biophoto(parse), f.bio_word_count(parse),
                             f.other_bio(parse), f.wiki_link(parse), f.education(parse), f.genealogy(parse), acaIns[0],
                             acaIns[1],
-                            nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], image[0], image[1], f.resume(parse),
+                            nonAcaIns[0], nonAcaIns[1], meth[0], meth[1], appl[0], appl[1], img_gal, 'hold', f.resume(parse),
                             interview[0], interview[1], interview[2], f.memoirs(parse), f.obituaries(parse),
                             f.awards(parse),
-                            f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)])
+                            f.prof_service(parse), f.archives(parse), f.pub_no(parse), f.add_resources(parse)]
+            toWrite.append(final)
         except AttributeError as a:
             print(a)
+            print(final)
+            print("acaIns " + str(acaIns))
+            print("nonacaIns " + str(nonAcaIns))
+            print("meth " + str(meth))
+            print("appl " + str(appl))
+            print("images " + str(image))
+            print("oralhist " + str(interview))
             j = j + 1
             personal_links.append(i)
 

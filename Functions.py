@@ -114,11 +114,12 @@ def find_date(soup):
     return name + year + birth_date + death_date
 
 
-def if_photos(soup):
+def if_biophoto(soup):
     # returns 'Absent' if there is not a photo
     # returns 'Present' if there is a photo
     indicator = 'Absent'
-    for _ in soup.findAll('img', {'class': 'right dropshadow'}):
+    bio = soup.find('div', {'id': 'bio_header'})
+    for _ in bio.findAll('img', {'class': 'right dropshadow'}):
         indicator = 'Present'
     # print(indicator)
     return indicator
@@ -340,19 +341,30 @@ def oral_hist(soup):
     result += [num_embedded, num - num_embedded]
     return result
 
-
-def image(soup):
+# returns 'Present' if there exists an image gallery
+def if_img_gall(soup):
     tag = soup.find('h3', string = 'Image Gallery')
     if tag is None:
-        return ['Absent', 0]
+        return 'Absent'
     else:
-        block = soup.find("div", {"class":"content-view-block block-slideshow_luminary"})
+        block = soup.find("div", {"class":"content-view-block block-slideshow_child_featured"})
+        if block:
+            return 'Present'
+
+# assumes that image gallery has images
+def image_gall(soup):
+    print("in image")
+    tag = soup.find('h3', string = 'Image Gallery')
+    if tag is None:
+        print("no image")
+        return 'Absent'
+    else:
+        print("found images")
+        block = soup.find("div", {"class":"content-view-block block-slideshow_child_featured"})
         count = 0
         for _ in block.findAll('img'):
             count = count+1
         return ['Present', count]
-
-
 
 def genealogy(soup):
     tag = soup.find('a', string = re.compile('^Mathematics Genealogy'))

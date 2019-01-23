@@ -1,6 +1,6 @@
 from Crawler import find_info
 from methodCrawler import find_method_info
-from Links import find_internal_links, generate_link_dataframe
+from Links import all_links, find_internal_links, generate_link_dataframe
 from institutions import find_inst_info
 
 control = "continue"
@@ -24,6 +24,9 @@ while True:
     if control == "quit":
         print("Quit the program\n")
         break
+    elif control == "tall":
+        all_links()
+
     elif control == "all":
         find_info()
         find_internal_links()

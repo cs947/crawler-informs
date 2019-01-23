@@ -64,7 +64,7 @@ def ret_all_link(link):
         print(e)
         return []
     text = sourcecode.text
-    soup = BeautifulSoup(text, "html.parser")
+    soup = BeautifulSoup(text, "lxml")
     main = soup.find("div", {"class": "content-container"})
     if main == None:
         main = soup.find("div", {"class": "content"})
@@ -90,6 +90,44 @@ def ret_all_link(link):
         print(children)
     return children
 
+def TESTret_all_link(link):
+    # returns all the links on the page given by the link argument
+    # excludes the header and footer
+    print(link)
+
+    try:
+        sourcecode = requests.get("https://www.informs.org" + link, timeout=5)
+    except Exception as e:
+        print(e)
+        return []
+    text = sourcecode.text
+    soup = BeautifulSoup(text, "html.parser")
+    main = soup.find("div", {"class": "content-container"})
+    if main == None:
+        main = soup.find("div", {"class": "content"})
+    children = []
+    findall = []
+    for url in main.findAll('a'):
+        href = url.get('href')
+        href_str = str(href)
+        findall.append(href_str)
+        # print("this is the link: " + str(href_str))
+        if len(href_str) > 250:
+            print("this next link is longer than 250 chars")
+            print(href_str)
+        if (href_str == "https://www.informs.org/Archive/Biographical-profiles-ARCHIVE/Barnett-Arnold-I"):
+            print(href_str)
+            print(request.get(href_str).status_code)
+        if (str(href_str) == "/Explore/History-of-O.R.-Excellence/Documents/Bernard-O.-Koopman-Search-and-Screening-1946"):
+            print('current debug')
+            print(main)
+        # if href_str.startswith('/') and "?" not in href_str and "#" not in href_str:
+        #     children.append(["https://www.informs.org" + href_str, url.text.replace('\n', '')])
+        if href_str.startswith('http'): # and "?" not in href_str and "#" not in href_str and "pubsonline" not in href_str and "linkedin" not in href_str and "analytics-magazine.org" not in href_str:
+            children.append([href_str, url.text.replace('\n', '')])
+    if link == "/Explore/History-of-O.R.-Excellence/O.R.-Application-Areas/Environment-Energy-and-Sustainability":
+        print(children)
+    return findall
 
 def check(link):
     # returns a list of [link that is broken,
@@ -160,6 +198,22 @@ def check_list(list_towrite):
     list_towrite[2] = soup.find_all(href = child)[0].parent.text
     # print(list_towrite[2])
     return list_towrite
+
+def all_links():
+    try:
+        with open('internal_list.pkl', 'rb') as output:
+            link_set = pickle.load(output)
+    except:
+        print("Internal links not found. Please run 'find' to generate internal links\n")
+        return
+    all_link_list = []
+    for link in link_set:
+        all_link_list.append('From this link' + str(link))
+        all_links = TESTret_all_link(link)
+        all_link_list.append(all_links)
+    links_df = pd.DataFrame(all_link_list)
+    output_dead_link(links_df)
+    return
 
 def generate_link_dataframe():
     try:

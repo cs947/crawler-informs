@@ -13,10 +13,11 @@ def find_method_info(info):
         "minfo": 'O.R.-Methodologies/',
     }
 
-    toWrite = [['Title', 'Logo', 'Description', 'Desc Word Count', 'Links and References', 'Indivs. Count',
+    toWrite = [['Title', 'Logo', 'Description', 'Desc Word Count', 'Image Gallery',
                         'Oral History Interview in INFORMS Format', 'Oral History Interview - Other - Embedded',
                         'Oral History Interview - Other - Reference',
-                        'Memoirs and Autobiographies', 'Library Archives']]
+                        'Memoirs and Autobiographies', 'Library Archives', 'Links and References',
+                        'Indivs. Count', 'Additional Resources']]
     time = str(datetime.datetime.now())[:-7]
     print(time)
     writer = pd.ExcelWriter(thisdict[info][:-1] + ' ' + time.replace(':', '‘') + '.xlsx', engine='xlsxwriter')
@@ -33,20 +34,26 @@ def find_method_info(info):
         title = f.find_title(parse)
         is_logo = f.find_logo(parse)
         desc_word_count = f.desc_word_count(parse)
+        img_gal = f.if_img_gall(parse)
+        image = f.image_gall(parse)
         indiv_count = f.indiv_count(body)
         interview = f.oral_hist(parse)
 
-        toWrite.append([title, is_logo, desc_word_count[0], desc_word_count[1], f.linksandrefs(parse),
-                        indiv_count, interview[0], interview[1], interview[2],
+        toWrite.append([title, is_logo, desc_word_count[0], desc_word_count[1],
+                        img_gal, image[1], 
+                        interview[0], interview[1], interview[2],
                         f.memoirs3(parse),
-                        f.archives(parse)])
+                        f.archives(parse),
+                        f.linksandrefs(parse),
+                        indiv_count,
+                        f.add_resources(parse)])
 
     df = pd.DataFrame(toWrite)
 
-    df.to_excel(writer, header=False, index=False, sheet_name='methodologies')
+    df.to_excel(writer, header=False, index=False, sheet_name='info')
 
     workbook = writer.book
-    method = writer.sheets['methodologies']
+    method = writer.sheets['info']
     text_format = workbook.add_format({'text_wrap': True})
     text_format.set_align('top')
     # celld2 = workbook.cell('D2')
